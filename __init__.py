@@ -176,7 +176,7 @@ class Fights(breadcord.module.ModuleCog):
             embeds=[],
         )
 
-    @group.command(description="Nominate a fight")
+    @group.command(description="Nominate a character to fight")
     @app_commands.describe(
         name="The name of the nominee",
         image="An image of the nominee",
@@ -190,6 +190,14 @@ class Fights(breadcord.module.ModuleCog):
     ) -> None:
         if not image.width:
             await ctx.reply("Must upload an image")
+            return
+
+        def normalise_name(n: str) -> str:
+            return n.lower().replace(" ", "")
+
+        all_fighters = self.db.execute("SELECT name FROM fighters").fetchall()
+        if any(normalise_name(name) == normalise_name(n) for n, in all_fighters):
+            await ctx.reply("A fighter with that name has already been nominated")
             return
 
         file = await image.to_file()  # We want to reupload the image just to make sure it stays valid
