@@ -234,6 +234,7 @@ class Fights(breadcord.module.ModuleCog):
             )
             for name, ratio in sorted(
                 win_ratios.items(),
+                key=lambda x: x[1],
                 reverse=True,
             )
         ]
