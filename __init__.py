@@ -191,6 +191,7 @@ class Fights(breadcord.module.ModuleCog):
         if not image.width:
             await ctx.reply("Must upload an image")
             return
+        name = name.strip()
 
         def normalise_name(n: str) -> str:
             return n.lower().replace(" ", "")
