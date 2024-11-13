@@ -1,0 +1,9 @@
+manifest_version = 1
+
+[module]
+name = "Fights"
+id = "fights"
+description = "Run polls on who would win in a fight between two characters."
+version = "0.0.1"
+license = "GNU GPLv3"
+authors = ["Fripe"]
