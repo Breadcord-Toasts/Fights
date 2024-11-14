@@ -117,7 +117,7 @@ class Fights(breadcord.module.ModuleCog):
                 .set_image(url=image_url)
                 .set_footer(
                     text=f"Submitted by {submitter_name.display_name}"
-                    if submitter_id and (submitter_name := (
+                    if (submitter_name := submitter_id and (
                         (ctx.guild.get_member(submitter_id) if ctx.guild else None)
                         or self.bot.get_user(submitter_id)
                         or await self.bot.fetch_user(submitter_id)
@@ -156,6 +156,9 @@ class Fights(breadcord.module.ModuleCog):
                         "UPDATE fighters SET wins = wins + 1 WHERE name = ?",
                         (fighter_name,),
                     )
+                # Just to make sure wins cant be above pairings. I have no clue why this was an issue
+                self.db.execute("UPDATE fighters SET wins = pairings WHERE wins > pairings")
+
                 self.db.commit()
 
             if timed_out:
@@ -255,6 +258,13 @@ class Fights(breadcord.module.ModuleCog):
                 text=f"A total of {len(char_query)} fighters have been nominated"
             ),
         )
+
+    @group.command(description="Remove a nominee", with_app_command=False)
+    @commands.is_owner()
+    async def remove(self, ctx: commands.Context, *, name: str) -> None:
+        self.db.execute("DELETE FROM fighters WHERE name = ?", (name,))
+        self.db.commit()
+        await ctx.reply(f"Removed {name}")
 
 
 async def setup(bot: breadcord.Bot, module: breadcord.module.Module) -> None:
