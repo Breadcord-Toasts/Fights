@@ -229,7 +229,7 @@ class Fights(breadcord.module.ModuleCog):
             await ctx.reply("No fighters have been nominated yet")
             return
 
-        win_ratios = {name: wins / pairings for name, wins, pairings in char_query}
+        win_ratios = {name: wins / max(1, pairings) for name, wins, pairings in char_query}
         leaderboard = [
             (
                 f"1. `{f'{floor(ratio * 100)}%'.rjust(4)}`"
